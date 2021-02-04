@@ -923,51 +923,51 @@ describe('PUT /api/menus/:id', function() {
   });
 });
 
-// describe('DELETE /api/menus/:id', function() {
-//   beforeEach(function(done) {
-//     seed.seedMenuDatabase(() => seed.seedMenuItemDatabase(done));
-//   });
+describe('DELETE /api/menus/:id', function() {
+  beforeEach(function(done) {
+    seed.seedMenuDatabase(() => seed.seedMenuItemDatabase(done));
+  });
 
-//   it('should remove the menu with the specified ID from the database if that menu has no related menu items', function(done) {
-//     request(app)
-//         .del('/api/menus/3')
-//         .then(function() {
-//           testDb.get('SELECT * FROM Menu WHERE Menu.id = 3', function(error, menu) {
-//             if (error) {
-//               throw new Error(error);
-//             }
-//             expect(menu).not.to.exist;
-//             done();
-//           });
-//         }).catch(done);
-//   });
+  it('should remove the menu with the specified ID from the database if that menu has no related menu items', function(done) {
+    request(app)
+        .del('/api/menus/3')
+        .then(function() {
+          testDb.get('SELECT * FROM Menu WHERE Menu.id = 3', function(error, menu) {
+            if (error) {
+              throw new Error(error);
+            }
+            expect(menu).not.to.exist;
+            done();
+          });
+        }).catch(done);
+  });
 
-//   it('should return a 204 status code after menu delete', function() {
-//     return request(app)
-//         .del('/api/menus/3')
-//         .expect(204);
-//   });
+  it('should return a 204 status code after menu delete', function() {
+    return request(app)
+        .del('/api/menus/3')
+        .expect(204);
+  });
 
-//   it('should not delete menus with existing related menu items', function(done) {
-//     request(app)
-//         .del('/api/menus/2')
-//         .then(function() {
-//           testDb.get('SELECT * FROM Menu WHERE Menu.id = 2', function(error, menu) {
-//             if (error) {
-//               throw new Error(error);
-//             }
-//             expect(menu).to.exist;
-//             done();
-//           });
-//         }).catch(done);
-//   });
+  it('should not delete menus with existing related menu items', function(done) {
+    request(app)
+        .del('/api/menus/2')
+        .then(function() {
+          testDb.get('SELECT * FROM Menu WHERE Menu.id = 2', function(error, menu) {
+            if (error) {
+              throw new Error(error);
+            }
+            expect(menu).to.exist;
+            done();
+          });
+        }).catch(done);
+  });
 
-//   it('should return a 400 status code if deleted menu has existing related menu items', function() {
-//     return request(app)
-//         .del('/api/menus/2')
-//         .expect(400);
-//   });
-// });
+  it('should return a 400 status code if deleted menu has existing related menu items', function() {
+    return request(app)
+        .del('/api/menus/2')
+        .expect(400);
+  });
+});
 
 describe('GET /api/menus/:menuId/menu-items', function() {
   before(function(done) {

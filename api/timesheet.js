@@ -60,5 +60,44 @@ timesheetRouter.post('/', (req, res, next) => {
     });
 });
 
+timesheetRouter.put('/:timesheetId', (req, res, next) => {
+    const hours = req.body.timesheet.hours;
+    const rate = req.body.timesheet.rate;
+    const date = req.body.timesheet.date;
+    const employeeId = req.params.employeeId;
+    const employeeSql = 'SELECT * FROM Employee WHERE id = $employeeId';
+    const employeeValues = {$employeeId: employeeId}
+    db.get(employeeSql, employeeValues, (error, employee) => {
+        if (error) {
+            next(error)
+        } else {
+            if(!hours || ! rate || !date || !employee) {
+                return res.sendStatus(400);
+            }
+            const sql = 'UPDATE Timesheet SET hours = $hours, rate = $rate, date = $date, employee_id = $employeeId WHERE id = $timesheetId';
+            const values = {
+                $hours: hours,
+                $rate: rate,
+                $date: date,
+                $employeeId: employeeId,
+                $timesheetId: req.params.timesheetId
+            };
+            db.run(sql, values, error => {
+                if (error) {
+                    next(error);
+                } else {
+                    db.get(`SELECT * FROM Timesheet WHERE id = ${req.params.timesheetId}`, (error, timesheet) => {
+                        if (error) {
+                            next(error);
+                        } else {
+                            res.status(200).json({timesheet: timesheet});
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
 // Export router
 module.exports = timesheetRouter;

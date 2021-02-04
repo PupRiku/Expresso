@@ -6,5 +6,7 @@ const employeeRouter = express.Router();
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
+
+
 // Export router
-module.exports = artistsRouter;
+module.exports = employeeRouter;

@@ -6,6 +6,21 @@ const timesheetRouter = express.Router({mergeParams: true});
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
+timesheetRouter.param('timesheetId', (req, res, next, timesheetId) => {
+    const sql = 'SELECT * FROM Timesheet WHERE id = $timesheetId';
+    const values = {$timesheetId: timesheetId};
+    db.get(sql, values, (error, timesheet) => {
+        if (error) {
+            next(error);
+        } else if (timesheet) {
+            req.timesheet = timesheet;
+            next();
+        } else {
+            res.sendStatus(404);
+        }
+    });
+});
+
 timesheetRouter.get('/', (req, res, next) => {
     db.all(`SELECT * FROM Timesheet WHERE employee_id = ${req.params.employeeId}`, (error, timesheets) => {
         if (error) {

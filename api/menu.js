@@ -13,7 +13,7 @@ menuRouter.param('menuId', (req, res, next, menuId) => {
         if (error) {
             next(error);
         } else if (menu) {
-            res.menu = menu;
+            req.menu = menu;
             next();
         } else {
             res.sendStatus(404);
@@ -51,6 +51,10 @@ menuRouter.post('/', (req, res, next) => {
             });
         }
     });
+});
+
+menuRouter.get('/:menuId', (req, res, next) => {
+    res.status(200).json({menu: req.menu});
 });
 
 // Export router

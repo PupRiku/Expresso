@@ -66,5 +66,37 @@ employeeRouter.get('/:employeeId', (req, res, next) => {
     res.status(200).json({employee: req.employee});
 });
 
+employeeRouter.put('/:employeeId', (req, res, next) => {
+    const name = req.body.employee.name;
+    const position = req.body.employee.position;
+    const wage = req.body.employee.wage;
+    const isCurrentEmployee = req.body.employee.isCurrentEmployee === 0 ? 0 : 1;
+    if(!name || ! position || !wage) {
+        return res.sendStatus(400);
+    }
+
+    const sql = 'UPDATE Employee SET name = $name, position = $position, wage = $wage, is_current_employee = $isCurrentEmployee WHERE id = $employeeId';
+    const values = {
+        $name: name,
+        $position: position,
+        $wage: wage,
+        $isCurrentEmployee: isCurrentEmployee,
+        $employeeId: req.params.employeeId
+    };
+    db.run(sql, values, error => {
+        if (error) {
+            next(error);
+        } else {
+            db.get(`SELECT * FROM Employee WHERE id = ${req.params.employeeId}`, (error, employee) => {
+                if (error) {
+                    next(error);
+                } else {
+                    res.status(200).json({employee: employee});
+                }
+            });
+        }
+    });
+});
+
 // Export router
 module.exports = employeeRouter;

@@ -6,6 +6,21 @@ const employeeRouter = express.Router();
 const sqlite3 = require('sqlite3');
 const db = new sqlite3.Database(process.env.TEST_DATABASE || './database.sqlite');
 
+employeeRouter.param('employeeId', (req, res, next, employeeId) => {
+    const sql = 'SELECT * FROM Employee WHERE id = $employeeId';
+    const values = { $employeeId: employeeId };
+    db.get(sql, values, (error, employee) => {
+        if (error) {
+            next(error);
+        } else if (employee) {
+            req.employee = employee;
+            next();
+        } else {
+            res.sendStatus(404);
+        }
+    });
+});
+
 employeeRouter.get('/', (req, res, next) => {
     db.all('SELECT * FROM Employee WHERE is_current_employee = 1', (error, employees) => {
         if (error) {
@@ -45,6 +60,10 @@ employeeRouter.post('/', (req, res, next) => {
             });
         }
     });
+});
+
+employeeRouter.get('/:employeeId', (req, res, next) => {
+    res.status(200).json({employee: req.employee});
 });
 
 // Export router

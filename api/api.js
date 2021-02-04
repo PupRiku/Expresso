@@ -10,7 +10,7 @@ const menuRouter = require('./menu');
 
 // Mount routes
 apiRouter.use('/employees', employeeRouter);
-apiRouter.use('/menu', menuRouter);
+apiRouter.use('/menus', menuRouter);
 
 // Export router
 module.exports = apiRouter;
